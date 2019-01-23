@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -6,14 +7,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
 namespace TestUWP {
-    /// <summary>
-    /// Обеспечивает зависящее от конкретного приложения поведение, дополняющее класс Application по умолчанию.
-    /// </summary>
     sealed partial class App : Application {
-        /// <summary>
-        /// Инициализирует одноэлементный объект приложения.  Это первая выполняемая строка разрабатываемого
-        /// кода; поэтому она является логическим эквивалентом main() или WinMain().
-        /// </summary>
         public App() {
             InitializeComponent();
             Suspending += OnSuspending;
@@ -36,6 +30,12 @@ namespace TestUWP {
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated) {
                     //TODO: Загрузить состояние из ранее приостановленного приложения
+                }
+
+                if (e.PreviousExecutionState == ApplicationExecutionState.ClosedByUser) {
+                    var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                    string value = localSettings.Values["test setting"] as string;
+                    Debug.WriteLine($"value = {value}");
                 }
 
                 // Размещение фрейма в текущем окне
@@ -72,7 +72,11 @@ namespace TestUWP {
         /// <param name="e">Сведения о запросе приостановки.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e) {
             var deferral = e.SuspendingOperation.GetDeferral();
+
             //TODO: Сохранить состояние приложения и остановить все фоновые операции
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            localSettings.Values["test setting"] = "a device specific setting";
+
             deferral.Complete();
         }
     }
