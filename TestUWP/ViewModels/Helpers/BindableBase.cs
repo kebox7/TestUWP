@@ -13,15 +13,6 @@ namespace TestUWP.ViewModels.Helpers {
             OnPropertyChanged(propertyName);
         }
 
-        protected void SetСomplexProperty<T>(ref T storage, T value, string complexPropertyName, [CallerMemberName] string propertyName = null) {
-            if (Equals(storage, value))
-                return;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            OnPropertyChanged(complexPropertyName);
-        }
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
